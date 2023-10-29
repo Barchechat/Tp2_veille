@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ma Bibliothèque</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="row bg-dark">
+        <h1 class="text-white">Ma Bibliothèque</h1>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <h2>Ajouter un Livre</h2>
+            <form method="POST" action="/add_book">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="title" class="fw-bold">Titre du Livre:</label><br>
+                        <input type="text" name="title" class="form-control w-75 mt-1" required>
+                    </div>
+                    <div class="col-6">
+                        <label for="author" class="fw-bold">Auteur:</label><br>
+                        <input type="text" name="author" class="form-control w-75 mt-1">
+                    </div>
+                </div>
+                <label for="classification_id" class="fw-bold">Classification:</label><br>
+                <select name="classification_id" class="form-select w-25 mt-1" required>
+                    <option value="1">Fiction</option>
+                    <option value="2">Non-fiction</option>
+                    <option value="3">Jeunesse</option>
+                    <option value="4">Biographie</option>
+                    <option value="5">Science Fiction</option>
+                    <option value="6">Mystère</option>
+                    <option value="7">Romance</option>
+                    <option value="8">Horreur</option>
+                    <option value="9">Fantaisie</option>
+                    <option value="10">Autre</option>
+                </select>
+                <button class="btn btn-primary mt-2" type="submit">Ajouter</button>
+            </form>
+        </div>
+        <div class="col-6">
+            <h2>Emprunter un livre</h2>
+            <form method="POST" action="/add_loan">
+                <label for="book_id" class="fw-bold">Livre:</label><br>
+                <select name="book_id" class="form-select w-75 mt-1" required>
+                    {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.title }}</option>
+                    {% endfor %}
+                </select>
+                <label for="due_date" class="fw-bold">Date de Retour (YYYY-MM-DD):</label><br>
+                <input type="date" name="due_date" class="form-control w-25 mt-1" required min="{{ current_date }}">
+
+                <button class="btn btn-primary mt-2" type="submit">Emprunter</button>
+
+
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <h2>Liste des Emprunts</h2>
+    <ul>
+        {% for loan in loans %}
+        <li>Livre : {{ loan.book.title }} - Date de Retour : {{ loan.due_date.strftime('%Y-%m-%d') }} - Frais de Retard
+            : ${{ loan.late_fee }}
+            <form action="/remove_loan" method="post" style="display: inline;">
+                <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                <button class="btn btn-danger btn-sm" type="submit">Supprimer Emprunt</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+
+</body>
+
+</html>
